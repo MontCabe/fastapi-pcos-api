@@ -61,8 +61,14 @@ async def predict(data: PCOSInput):
 
         # Predict
         prediction = model.predict(input_df)[0]
+        probability = model.predict_proba(input_df)[0][1]  # Probability of class 1 (Prone to PCOS)
         result = "Prone to PCOS" if prediction == 1 else "Not Prone to PCOS"
-        return {"prediction": result}
+
+        return {
+            "prediction": result,
+            "probability": round(float(probability), 4)  # Ensure JSON-safe float
+        }
+
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
